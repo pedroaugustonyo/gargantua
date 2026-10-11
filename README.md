@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/gargantua-preview.gif" alt="Animated view of Gargantua with its glowing accretion disk and surrounding stars" width="960">
+  <img src="docs/images/gargantua-demo.gif" alt="Animated view of Gargantua with its glowing accretion disk and surrounding stars" width="960">
 </p>
 
 ## About
