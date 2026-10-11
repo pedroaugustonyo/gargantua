@@ -12,13 +12,6 @@
   <img src="docs/images/gargantua-preview.gif" alt="Animated view of Gargantua with its glowing accretion disk and surrounding stars" width="640">
 </p>
 
-<details>
-  <summary>Desktop screenshot</summary>
-
-  ![Gargantua in the browser with its information panel and simulation controls](docs/images/gargantua-desktop.png)
-
-</details>
-
 ## About
 
 This started as a personal experiment with Three.js and shaders. The idea was to recreate the look of Gargantua: a dark center, a glowing disk, and light bending around it. You can move the camera and explore it from different angles.
