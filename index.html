@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050507" />
+    <meta name="description" content="An interactive, Gargantua-inspired black hole. Explore a luminous accretion disk, gravitational lensing, and a sky full of stars." />
+    <title>Gargantua</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23050507'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='%23efc38d' stroke-width='3'/%3E%3Cellipse cx='32' cy='32' rx='29' ry='6' fill='none' stroke='%23efc38d' stroke-width='2'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <canvas id="universe" tabindex="0" aria-label="Interactive black hole. Drag to orbit, scroll or pinch to zoom. Arrow keys orbit, plus and minus zoom."></canvas>
+    <div id="loading" role="status"><span class="loader-orbit"></span><p>Loading simulation</p></div>
+    <div id="error" role="alert" hidden><h1>Unable to load simulation</h1><p>This experience needs WebGL 2. Enable hardware acceleration or open it in a recent browser.</p><button onclick="location.reload()">Try again</button></div>
+
+    <div class="interface" id="interface">
+      <section class="scene-info" aria-labelledby="scene-title">
+        <h1 class="scene-title" id="scene-title">Gargantua</h1>
+        <p class="object-type"><span aria-hidden="true"></span> Supermassive black hole</p>
+        <p class="object-description">The fictional black hole from <em>Interstellar</em>. Its immense gravity bends light, wrapping the glow of an orbiting accretion disk around its shadow.</p>
+        <dl class="object-facts">
+          <div><dt>Mass</dt><dd>100 million <span>suns</span></dd></div>
+          <div><dt>Rotation</dt><dd>Near the <span>maximum</span></dd></div>
+        </dl>
+        <a class="object-source" href="https://www.space.com/28077-science-of-interstellar-book-excerpt.html" target="_blank" rel="noopener noreferrer">The science of Interstellar <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
+      </section>
+      <div class="help"><button class="icon-button" id="info-button" aria-label="Camera controls" title="Camera controls"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v6m0-10v1"/></svg></button></div>
+
+      <aside class="settings" aria-label="Simulation controls">
+        <button class="settings-heading" id="settings-toggle" aria-expanded="true" aria-controls="settings-content"><span><svg viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2"/><circle cx="15" cy="17" r="2"/></svg> Simulation controls</span><span id="settings-chevron" aria-hidden="true">−</span></button>
+        <div id="settings-content">
+          <div class="setting"><label for="intensity">Disk luminosity</label><output for="intensity" id="intensity-value">1.00×</output><input id="intensity" type="range" min="0.3" max="2" step="0.05" value="1" /></div>
+          <div class="switch-row"><label for="auto-orbit">Auto orbit</label><input type="checkbox" role="switch" id="auto-orbit" checked /></div>
+          <div class="switch-row"><label for="stars">Star field</label><input type="checkbox" role="switch" id="stars" checked /></div>
+          <div class="presets" aria-label="Camera presets"><button class="preset active" data-view="cinematic" aria-pressed="true">Cinematic</button><button class="preset" data-view="edge" aria-pressed="false">Edge-on</button><button class="preset" data-view="above" aria-pressed="false">Above</button></div>
+        </div>
+      </aside>
+
+    </div>
+
+    <dialog id="about" aria-labelledby="help-title"><button class="icon-button close-dialog" id="close-about" aria-label="Close controls">×</button><h2 id="help-title">Controls</h2><dl><div><dt>Orbit</dt><dd>Drag or arrow keys</dd></div><div><dt>Zoom</dt><dd>Scroll, pinch, or + / −</dd></div><div><dt>Minimize / expand settings</dt><dd>H</dd></div></dl></dialog>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,72 @@
+import { chromium } from '@playwright/test';
+import assert from 'node:assert/strict';
+import { mkdir } from 'node:fs/promises';
+
+const browser = await chromium.launch({ headless: true });
+const errors = [];
+const output = 'test-results';
+await mkdir(output, { recursive: true });
+try {
+  const page = await browser.newPage({ viewport: { width: 1000, height: 720 }, deviceScaleFactor: 1 });
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => { if (message.type() === 'error' && !message.text().includes('fonts.googleapis')) errors.push(message.text()); });
+  await page.goto(process.env.APP_URL || 'http://127.0.0.1:5173');
+  await page.waitForLoadState('networkidle');
+  await page.locator('#loading').waitFor({ state: 'hidden', timeout: 60000 });
+  assert.equal(await page.locator('#error').isVisible(), false, 'WebGL scene should initialize');
+  assert.equal(await page.title(), 'Gargantua');
+  assert.equal(await page.getByRole('heading', { name: 'Gargantua', exact: true }).isVisible(), true);
+  assert.equal(await page.locator('#speed').count(), 0);
+  assert.equal(await page.locator('.brand, .intro, .bottom-bar, .subject-label, #pause, #distance').count(), 0);
+  await page.screenshot({ path: `${output}/desktop.png` });
+  await page.getByRole('button', { name: 'Simulation controls', exact: true }).click();
+  assert.equal(await page.locator('#settings-content').isVisible(), false);
+  await page.keyboard.press('h');
+  assert.equal(await page.locator('#settings-content').isVisible(), true);
+  await page.locator('#intensity').fill('1.5');
+  await page.locator('#intensity').dispatchEvent('input');
+  assert.equal(await page.locator('#intensity-value').textContent(), '1.50×');
+  await page.getByRole('switch', { name: 'Star field' }).uncheck();
+  await page.getByRole('switch', { name: 'Star field' }).check();
+  await page.getByRole('button', { name: 'Above', exact: true }).click();
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: `${output}/above.png` });
+  assert.equal(await page.getByRole('button', { name: 'Above', exact: true }).getAttribute('aria-pressed'), 'true');
+  await page.getByRole('button', { name: 'Camera controls', exact: true }).click();
+  assert.equal(await page.getByRole('dialog').isVisible(), true);
+  assert.equal(await page.getByRole('dialog').locator('p').count(), 0);
+  assert.equal(await page.getByRole('dialog').locator('dt').allTextContents().then(items => items.join('|')), 'Orbit|Zoom|Minimize / expand settings');
+  await page.keyboard.press('Escape');
+  await page.locator('#universe').focus();
+  await page.keyboard.press('+');
+  assert.equal(await page.locator('.preset.active').count(), 0);
+  await page.mouse.move(400, 260);
+  await page.mouse.down();
+  await page.mouse.move(520, 330, { steps: 12 });
+  await page.mouse.up();
+  assert.equal(await page.locator('.preset.active').count(), 0, 'Dragging leaves camera preset');
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(400);
+  assert.equal(await page.locator('#settings-content').isVisible(), false);
+  await page.getByRole('button', { name: 'Simulation controls', exact: true }).click();
+  await page.getByRole('button', { name: 'Cinematic', exact: true }).click();
+  await page.getByRole('button', { name: 'Simulation controls', exact: true }).click();
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: `${output}/mobile.png` });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, 'No horizontal overflow');
+  await page.getByRole('button', { name: 'Simulation controls', exact: true }).click();
+  assert.equal(await page.locator('#settings-content').isVisible(), true);
+  await page.screenshot({ path: `${output}/mobile-controls.png` });
+
+  const reduced = await browser.newPage({ viewport: { width: 800, height: 700 }, reducedMotion: 'reduce' });
+  await reduced.goto(process.env.APP_URL || 'http://127.0.0.1:5173');
+  await reduced.locator('#loading').waitFor({ state: 'hidden', timeout: 60000 });
+  assert.equal(await reduced.getByRole('switch', { name: 'Auto orbit' }).isChecked(), false);
+  assert.equal(await reduced.locator('#speed').count(), 0);
+  assert.deepEqual(errors, [], 'No JavaScript or rendering errors');
+  console.log('PASS: WebGL initialization, simplified UI, settings minimize/expand, luminosity, stars, presets, controls-only help, keyboard camera controls, drag, mobile layout, reduced motion.');
+  console.log(`Screenshots: ${output}/`);
+} finally {
+  await browser.close();
+}
