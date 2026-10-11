@@ -14,7 +14,7 @@
 
 ## About
 
-This started as a personal experiment with Three.js and shaders. The idea was to recreate the look of Gargantua: a dark center, a glowing disk, and light bending around it. You can move the camera and explore it from different angles.
+This was built with OpenAI Codex as a personal experiment with Three.js and shaders. The idea was to recreate the look of Gargantua: a dark center, a glowing disk, and light bending around it. You can move the camera and explore it from different angles.
 
 It uses approximate light bending and a few visual effects to get that look. It is not a scientifically accurate black hole simulation.
 
